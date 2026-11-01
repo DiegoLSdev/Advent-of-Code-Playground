@@ -1,0 +1,44 @@
+{
+  "name": "advent-of-code-playground",
+  "version": "0.1.0",
+  "description": "Local, open source playground to practice Advent of Code with your stars, puzzles and inputs.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.22.0",
+  "scripts": {
+    "dev": "concurrently -n server,web -c green,yellow \"tsx watch server/index.ts\" \"vite\"",
+    "build": "vite build",
+    "start": "vite build && tsx server/index.ts --static",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.5",
+    "@codemirror/lang-python": "^6.2.1",
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.15",
+    "@fontsource/source-code-pro": "^5.3.1",
+    "@hono/node-server": "^2.1.5",
+    "@lezer/highlight": "^1.2.5",
+    "@uiw/codemirror-themes": "^4.25.12",
+    "@uiw/react-codemirror": "^4.25.12",
+    "dompurify": "^3.4.17",
+    "hono": "^4.13.14",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  }
+}

@@ -1,0 +1,6 @@
+# Supply-chain safety:
+# - Only these dependencies may run install scripts (pnpm blocks the rest).
+# - New package versions must be at least 1 day old before they can be installed.
+onlyBuiltDependencies:
+  - esbuild
+minimumReleaseAge: 1440

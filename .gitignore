@@ -1,0 +1,10 @@
+node_modules/
+web/dist/
+
+# Personal Advent of Code content: cookie, puzzle text and inputs.
+# AoC asks not to redistribute them, so they never go into the repo.
+.data/
+.env
+
+# Your own solutions: keep them in your fork or a separate repo.
+solutions/

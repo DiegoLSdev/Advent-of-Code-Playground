@@ -1,0 +1,751 @@
+/* Inspired by adventofcode.com: night-blue background, monospace,
+   green links and golden stars. */
+:root {
+  --bg: #0f0f23;
+  --fg: #cccccc;
+  --dim: #666677;
+  --faint: #333340;
+  --white: #ffffff;
+  --green: #009900;
+  --green-hover: #99ff99;
+  --title: #00cc00;
+  --gold: #ffff66;
+  --silver: #9999cc;
+  --red: #ff6666;
+  --code-bg: #10101a;
+  --code-border: #333340;
+  --header-h: 4.2em;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 300;
+  font-size: 14pt;
+  line-height: 1.35;
+}
+
+a {
+  color: var(--green);
+  text-decoration: none;
+}
+a:hover,
+a:focus-visible {
+  color: var(--green-hover);
+}
+
+p {
+  margin: 0.8em 0;
+}
+
+em {
+  color: var(--white);
+  font-style: normal;
+  text-shadow: 0 0 5px var(--white);
+}
+em.star {
+  color: var(--gold);
+  text-shadow: 0 0 5px var(--gold);
+}
+
+code {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  padding: 0 0.15em;
+}
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  padding: 0.5em 0.75em;
+  overflow-x: auto;
+}
+pre code {
+  border: none;
+  padding: 0;
+}
+
+/* --- Link-like buttons: [Like this] ---------------------------------- */
+button.link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--green);
+  font: inherit;
+  cursor: pointer;
+}
+button.link:hover:not(:disabled),
+button.link:focus-visible {
+  color: var(--green-hover);
+}
+button.link:disabled {
+  color: var(--dim);
+  cursor: default;
+}
+
+input,
+textarea,
+select {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.85em;
+  padding: 0.25em 0.4em;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 1px solid var(--green);
+}
+
+/* --- Header ---------------------------------------------------------- */
+header {
+  padding: 0.6em 1em 0;
+  white-space: nowrap;
+}
+header > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 1em;
+}
+header h1 {
+  margin: 0;
+  font-size: 1em;
+  font-weight: normal;
+}
+header nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.8em;
+}
+.title-global a {
+  color: var(--title);
+  text-shadow:
+    0 0 2px var(--title),
+    0 0 5px var(--title);
+}
+.title-event a {
+  color: var(--title);
+  text-shadow:
+    0 0 2px var(--title),
+    0 0 5px var(--title);
+}
+.title-event-wrap {
+  color: var(--title);
+  opacity: 0.33;
+}
+.user {
+  margin-left: auto;
+  color: var(--fg);
+}
+.star-count {
+  color: var(--gold);
+}
+
+main {
+  padding: 1.5em 1em 3em;
+}
+main.narrow {
+  max-width: 60em;
+}
+
+.quiet {
+  color: var(--dim);
+}
+.error {
+  color: var(--red);
+}
+.success {
+  color: var(--gold);
+  text-shadow: 0 0 5px var(--gold);
+}
+
+/* --- Stars ----------------------------------------------------------- */
+.star {
+  color: var(--faint);
+}
+.star.gold {
+  color: var(--gold);
+  text-shadow: 0 0 5px var(--gold);
+}
+.star.silver {
+  color: var(--silver);
+}
+
+/* --- Events list ----------------------------------------------------- */
+.eventlist-event {
+  margin: 0.2em 0;
+  white-space: pre;
+}
+.progress {
+  color: var(--faint);
+  letter-spacing: -0.05em;
+}
+.progress .filled {
+  color: var(--gold);
+}
+
+/* --- Calendar -------------------------------------------------------- */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11em, 1fr));
+  gap: 0.4em 2em;
+  margin: 1em 0;
+  max-width: 60em;
+}
+.calendar a,
+.calendar span.locked {
+  display: block;
+  white-space: pre;
+  color: var(--fg);
+}
+.calendar a:hover {
+  color: var(--white);
+  text-shadow: 0 0 5px var(--white);
+}
+.calendar .locked {
+  color: var(--faint);
+}
+
+/* --- Day page: editor on the left, data and runs on the right --------- */
+.app-full {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.app-full header {
+  padding-bottom: 0.5em;
+}
+.app-full main {
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+.page-message {
+  padding: 1em;
+}
+.spacer {
+  flex: 1;
+}
+
+.day {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--faint);
+}
+.daybar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3em 0.9em;
+  padding: 0.4em 1em;
+  border-bottom: 1px solid var(--faint);
+  font-size: 0.9em;
+}
+.daybar h2 {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--white);
+}
+.daybar-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.day-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+}
+.pane {
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.pane-head {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.35em 0.75em;
+  border-bottom: 1px solid var(--faint);
+  font-size: 0.75em;
+  min-height: 2.6em;
+  flex-shrink: 0;
+}
+.editor {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--code-bg);
+}
+.editor.quiet {
+  padding: 1em;
+}
+.editor > div,
+.editor .cm-editor {
+  height: 100%;
+}
+/* Selected text keeps its syntax colors but always reads clearly. */
+.editor .cm-selectionMatch {
+  outline: 1px solid rgba(38, 79, 158, 0.6);
+}
+.editor .cm-activeLineGutter {
+  background: transparent;
+  color: var(--fg);
+}
+
+.font-size {
+  display: flex;
+}
+.font-size .btn {
+  border-right-width: 0;
+  min-width: 2.4em;
+}
+.font-size .btn:last-child {
+  border-right-width: 1px;
+}
+
+/* input / example inside the code, and their hover tooltip. */
+.cm-data {
+  border-radius: 2px;
+}
+.cm-data-input {
+  background: rgba(255, 255, 102, 0.09);
+}
+.cm-data-example {
+  background: rgba(153, 153, 204, 0.12);
+}
+.cm-tooltip.cm-tooltip-hover {
+  background: var(--bg);
+  border: 1px solid var(--code-border);
+}
+.cm-data-tooltip {
+  padding: 0.3em 0.6em;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 0.85em;
+}
+.cm-data-tooltip-input {
+  color: var(--gold);
+}
+.cm-data-tooltip-example {
+  color: var(--silver);
+}
+
+/* --- Splitters ------------------------------------------------------- */
+.splitter {
+  position: relative;
+  flex-shrink: 0;
+  background: var(--faint);
+  outline: none;
+  touch-action: none;
+}
+.splitter.vertical {
+  width: 1px;
+  cursor: col-resize;
+}
+.splitter.horizontal {
+  height: 1px;
+  cursor: row-resize;
+}
+/* Wider invisible grab area, visible glow on hover / drag / focus. */
+.splitter::after {
+  content: '';
+  position: absolute;
+  z-index: 5;
+}
+.splitter.vertical::after {
+  inset: 0 -4px;
+}
+.splitter.horizontal::after {
+  inset: -4px 0;
+}
+.splitter:hover,
+.splitter:focus-visible,
+.resizing-vertical .splitter.vertical,
+.resizing-horizontal .splitter.horizontal {
+  background: var(--title);
+  box-shadow: 0 0 6px var(--title);
+}
+.resizing-vertical,
+.resizing-vertical * {
+  cursor: col-resize !important;
+  user-select: none;
+}
+.resizing-horizontal,
+.resizing-horizontal * {
+  cursor: row-resize !important;
+  user-select: none;
+}
+
+/* --- Buttons: quiet, green like AoC links ---------------------------- */
+.btn {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.8em;
+  padding: 0.3em 0.8em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn:hover:not(:disabled),
+.btn:focus-visible {
+  border-color: var(--green);
+  color: var(--green-hover);
+}
+.btn:disabled {
+  color: var(--dim);
+  cursor: default;
+}
+.btn.primary {
+  border-color: var(--green);
+  color: var(--title);
+  text-shadow: 0 0 4px rgba(0, 204, 0, 0.6);
+}
+.btn.primary:hover:not(:disabled) {
+  background: #0f2a14;
+}
+.btn.danger {
+  border-color: #663333;
+  color: var(--red);
+}
+.pane-head .btn,
+.btn.small {
+  font-size: 1em;
+  padding: 0.15em 0.6em;
+}
+.runbar .btn.small {
+  font-size: 0.8em;
+}
+
+.segmented {
+  display: flex;
+  border: 1px solid var(--code-border);
+}
+.segmented button {
+  background: none;
+  border: none;
+  color: var(--dim);
+  font: inherit;
+  padding: 0.2em 0.8em;
+  cursor: pointer;
+}
+.segmented button:hover {
+  color: var(--green-hover);
+}
+.segmented button[aria-pressed='true'] {
+  background: #0f2a14;
+  color: var(--title);
+  text-shadow: 0 0 4px rgba(0, 204, 0, 0.6);
+}
+
+/* --- Right pane: tabs on top, run area below ------------------------- */
+.side-top {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex-shrink: 0;
+}
+.side-top.collapsed {
+  height: auto;
+}
+.side-bottom {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.2em;
+  padding: 0 0.75em;
+  border-bottom: 1px solid var(--faint);
+  font-size: 0.8em;
+  flex-shrink: 0;
+}
+.side-top.collapsed .tabs {
+  border-bottom: none;
+}
+.tabs button[role='tab'] {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--dim);
+  font: inherit;
+  padding: 0.5em 0.8em;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.tabs button[role='tab']:hover {
+  color: var(--green-hover);
+}
+.tabs button[aria-selected='true'] {
+  color: var(--white);
+  border-bottom-color: var(--title);
+  text-shadow: 0 0 5px var(--white);
+}
+/* Highlighted while hovering input / example in the code or a badge. */
+.tabs button.hinted {
+  color: var(--gold);
+  background: rgba(255, 255, 102, 0.08);
+  border-bottom-color: var(--gold);
+  text-shadow: 0 0 5px var(--gold);
+}
+.tab-warn {
+  color: var(--red);
+}
+
+.tab-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.15s;
+}
+.tab-body.hinted {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 102, 0.35);
+}
+.puzzle {
+  padding: 0.25em 1em 1em;
+  font-size: 0.8em;
+}
+.file-note {
+  margin: 0;
+  padding: 0.5em 1em;
+  font-size: 0.75em;
+}
+.tab-body textarea {
+  flex: 1;
+  border: none;
+  resize: none;
+  padding: 0 1em 0.75em;
+  font-size: 0.8em;
+  outline: none;
+}
+.input-view {
+  margin: 0;
+  border: none;
+  flex: 1;
+  font-size: 0.75em;
+  padding: 0 1em 1em;
+}
+
+.runbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  padding: 0.6em 0.75em;
+  border-bottom: 1px solid var(--faint);
+  font-size: 0.85em;
+  flex-shrink: 0;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  padding: 0.6em 0.75em;
+  font-size: 0.8em;
+  flex-shrink: 0;
+}
+.card {
+  border: 1px solid var(--code-border);
+  background: var(--code-bg);
+  padding: 0.5em 0.75em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3em;
+  min-width: 0;
+}
+.card.running {
+  border-color: var(--green);
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  width: 100%;
+  color: var(--silver);
+  font-size: 0.85em;
+}
+.card-head .star {
+  margin-left: auto;
+}
+.card-value {
+  word-break: break-all;
+}
+.card-note {
+  font-size: 0.85em;
+}
+.badge {
+  border: 1px solid currentColor;
+  padding: 0 0.4em;
+  font-size: 0.85em;
+  line-height: 1.4;
+  cursor: default;
+}
+.badge.input {
+  color: var(--gold);
+}
+.badge.example {
+  color: var(--silver);
+}
+.badge.none {
+  color: var(--dim);
+}
+.result {
+  color: var(--white);
+  font-weight: 700;
+  text-shadow: 0 0 5px var(--white);
+}
+
+.console {
+  flex: 1;
+  min-height: 3em;
+  margin: 0;
+  border: none;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.75em;
+  padding: 0.6em 0.75em;
+}
+.console .info {
+  color: var(--dim);
+}
+.console .result {
+  color: var(--gold);
+  text-shadow: none;
+  font-weight: normal;
+}
+.console .warn {
+  color: #ffaa55;
+}
+.console .error {
+  color: var(--red);
+}
+
+/* --- Modal ----------------------------------------------------------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(5, 5, 15, 0.75);
+  animation: fade-in 0.12s ease-out;
+}
+.modal {
+  width: min(32em, 100%);
+  background: var(--bg);
+  border: 1px solid var(--code-border);
+  box-shadow: 0 0 24px rgba(0, 204, 0, 0.12);
+  padding: 1.2em 1.4em;
+  font-size: 0.85em;
+}
+.modal h2 {
+  margin: 0 0 0.6em;
+  font-size: 1em;
+  font-weight: normal;
+  color: var(--white);
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6em;
+  margin-top: 1.2em;
+}
+.modal-actions .btn {
+  font-size: 0.9em;
+  padding: 0.4em 1em;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* --- Settings -------------------------------------------------------- */
+.disclaimer {
+  border-left: 2px solid var(--silver);
+  padding: 0.2em 0 0.2em 0.8em;
+  color: var(--silver);
+  font-size: 0.8em;
+}
+
+.settings label {
+  display: block;
+  margin: 1.2em 0 0.3em;
+  color: var(--white);
+}
+.settings input {
+  width: 100%;
+  max-width: 40em;
+}
+.settings ol {
+  padding-left: 1.5em;
+}
+
+@media (max-width: 1000px) {
+  .app-full {
+    height: auto;
+    overflow: visible;
+  }
+  .day-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .day-grid > .splitter.vertical {
+    display: none;
+  }
+  .editor-pane {
+    height: 60vh;
+  }
+  .side-top:not(.collapsed) {
+    height: 50vh !important;
+  }
+  .console {
+    min-height: 12em;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 12pt;
+  }
+  header,
+  main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  header {
+    white-space: normal;
+  }
+  .user {
+    margin-left: 0;
+  }
+}
